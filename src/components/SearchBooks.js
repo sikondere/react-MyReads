@@ -1,16 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
 import SelectBook from './SelectBook';
 import * as BooksAPI from '../BooksAPI';
 
+/**
+ * @description class based component for the search page
+ * @constructor
+ */
 class SearchBooks extends Component {
 
     state = {
         results: [],
     }
-
+    /**
+     * @description function to handle when a user chnages the book from one shelf to another
+     * or removes a book from  their shelves
+     * @param {event} e -the observed event
+     * @listens event
+     */
     handleOnChange = (event) => {
         const query = event.target.value;
         BooksAPI.search(query)
@@ -26,7 +34,11 @@ class SearchBooks extends Component {
                 }
             })
     };
-
+    /**
+     * @description renders the search page which comprises of an ordered list of books,
+     * an input that alllows the user to search for books and a link  back to the main page
+     * @returns an element that is an array of list items
+     */
     render() {
         let results = this.state.results;
         results = Array.isArray(results) ? results : [];
@@ -44,7 +56,6 @@ class SearchBooks extends Component {
                         </div>
                 </li>
         ));
-
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -75,7 +86,13 @@ class SearchBooks extends Component {
 }
 
 SearchBooks.propTypes = {
+    /**
+     * @description an array that represents the books on a users books shelf
+     */
     shelfs: PropTypes.array.isRequired,
+    /**
+     * @description a function to handle the change of a book from one shelf to another
+     */
     handleOnUpdate: PropTypes.func.isRequired,
 };
 
