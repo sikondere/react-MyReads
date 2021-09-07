@@ -1,27 +1,30 @@
 import React, { Component } from 'react';
-import Select from './Select';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
+import SelectBook from './SelectBook';
 import * as BooksAPI from '../BooksAPI';
 
-class Search extends Component {
+class SearchBooks extends Component {
 
     state = {
         results: [],
     }
 
     handleOnChange = (event) => {
-        let query = event.target.value;
-        query === '' ? 
-            this.setState({results: []}) :
-            BooksAPI.search(query)
-                .then((books) => {
+        const query = event.target.value;
+        BooksAPI.search(query)
+            .then((books) => {
+                if(Array.isArray(books)) {
                     this.setState(() => ({
                         results: books
                     }));
-                })
-    };
-
-    handleOnClick = (event) => {
-
+                } else {
+                    this.setState(() => ({
+                        results: []
+                    }));
+                }
+            })
     };
 
     render() {
@@ -34,7 +37,7 @@ class Search extends Component {
                     <div className="book">
                         <div className="book-top">
                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
-                            <Select book={book} shelfs={this.props.shelfs} handleOnUpdate={this.props.handleOnUpdate} />
+                            <SelectBook book={book} shelfs={this.props.shelfs} handleOnUpdate={this.props.handleOnUpdate} />
                             </div>
                             <div className="book-title">{book.title}</div>
                             <div className="book-authors">{Array.isArray(book.authors) ? book.authors.join(', ') : ''}</div>
@@ -45,8 +48,8 @@ class Search extends Component {
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                <button className="close-search" 
-                        onClick={() => this.setState({ showSearchPage: false })}>Close</button>
+                <Link className="close-search"
+                      to='/'>Close</Link>
                 <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -56,8 +59,8 @@ class Search extends Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" 
-                       onChange={this.handleOnChange} 
+                <input type="text"
+                       onChange={this.handleOnChange}
                        placeholder="Search by title or author" />
                 </div>
                 </div>
@@ -71,4 +74,9 @@ class Search extends Component {
     }
 }
 
-export default Search;
+SearchBooks.propTypes = {
+    shelfs: PropTypes.array.isRequired,
+    handleOnUpdate: PropTypes.func.isRequired,
+};
+
+export default SearchBooks;

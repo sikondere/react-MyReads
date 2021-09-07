@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import Select from './Select';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-class Main extends Component {
+import SelectBook from './SelectBook';
+
+class ListBooks extends Component {
 
     getBooksByShelf = (shelf) => {
         let results = this.props.shelfs;
@@ -12,7 +15,7 @@ class Main extends Component {
                     <div className="book">
                         <div className="book-top">
                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
-                            <Select book={book} shelfs={this.props.shelfs} handleOnUpdate={this.props.handleOnUpdate} />
+                            <SelectBook book={book} shelfs={this.props.shelfs} handleOnUpdate={this.props.handleOnUpdate} />
                             </div>
                             <div className="book-title">{book.title}</div>
                             <div className="book-authors">{Array.isArray(book.authors) ? book.authors.join(', ') : ''}</div>
@@ -23,9 +26,9 @@ class Main extends Component {
     }
 
     render() {
-        let currentlyReading = this.getBooksByShelf('currentlyReading');
-        let wantToRead = this.getBooksByShelf('wantToRead');
-        let read = this.getBooksByShelf('read');
+        const currentlyReading = this.getBooksByShelf('currentlyReading');
+        const wantToRead = this.getBooksByShelf('wantToRead');
+        const read = this.getBooksByShelf('read');
 
         return (
             <div className="list-books">
@@ -70,9 +73,17 @@ class Main extends Component {
                         </div>
                     </div>
                 </div>
+                <div className="open-search">
+                    <Link to='/search'>Add a book</Link>
+                </div>
             </div>
         );
     }
 }
 
-export default Main;
+ListBooks.propTypes = {
+    shelfs: PropTypes.array.isRequired,
+    handleOnUpdate: PropTypes.func.isRequired,
+};
+
+export default ListBooks;

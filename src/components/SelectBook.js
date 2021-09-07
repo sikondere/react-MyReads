@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import * as BooksAPI from '../BooksAPI';
 
-class Select extends Component {
-    
+class SelectBook extends Component {
     handleOnChange = (event) => {
-        let shelf = event.target.value;
-        let book = this.props.book;
+        const shelf = event.target.value;
+        const book = this.props.book;
         this.setState({ value: shelf});
         BooksAPI.update(book, shelf)
                 .then((books) => {
                     this.setState(() => ({
                         results: books
                     }));
+                }).then(() => {
+                    this.props.handleOnUpdate();
                 })
-        this.props.handleOnUpdate();
     };
 
     getCurrentShelf = () => {
@@ -25,13 +27,12 @@ class Select extends Component {
         ))
         if(results.length > 0) {
             shelf = results[0].shelf;
-        } 
+        }
         return shelf;
     };
 
     render() {
-        
-        let shelf = this.getCurrentShelf();
+        const shelf = this.getCurrentShelf();
 
         return (
             <div className="book-shelf-changer">
@@ -47,4 +48,10 @@ class Select extends Component {
     }
 }
 
-export default Select;
+SelectBook.propTypes = {
+    book: PropTypes.object.isRequired,
+    shelfs: PropTypes.array.isRequired,
+    handleOnUpdate: PropTypes.func.isRequired,
+};
+
+export default SelectBook;
